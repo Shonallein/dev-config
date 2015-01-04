@@ -8,21 +8,22 @@
 (add-to-list 'package-archives
   '("melpa" . "http://melpa.milkbox.net/packages/") t)
 
-(defvar shona/packages '(ack-and-a-half
-						 auto-complete
-						 cmake-mode
-						 flx-ido
-						 ggtags
-						 glsl-mode
-						 google-this
-						 google-c-style
-						 markdown-mode
-						 molokai-theme
-						 multiple-cursors
-						 projectile
-						 undo-tree
-						 yasnippet
-						 zeal-at-point)
+(defvar shona/packages '(
+			 auto-complete
+			 cmake-mode
+			 flx-ido
+			 ggtags
+			 glsl-mode
+			 google-this
+			 google-c-style
+			 markdown-mode
+			 molokai-theme
+			 multiple-cursors
+			 projectile
+			 pt
+			 undo-tree
+			 yasnippet
+			 zeal-at-point)
   "Default packages")
 
 (defun shona/packages-installed-p ()
@@ -97,6 +98,9 @@
 (add-hook 'c-mode-common-hook 'google-make-newline-indent)
 (add-hook 'c++-mode-hook 'google-set-c-style)
 (add-hook 'c++-mode-hook 'google-make-newline-indent)
+
+;; Projectile config
+(setq projectile-indexing-method 'alien)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;; Language modes ;;;;;;;;;;;;;;;;;;;
@@ -219,7 +223,7 @@ Toggles between: “all lower”, “Init Caps”, “ALL CAPS”."
 
 ;; Projectile shortcuts
 (define-key projectile-mode-map (kbd "C-M-o") 'projectile-find-file)
-(define-key projectile-mode-map (kbd "C-M-a") 'projectile-ack)
+(define-key projectile-mode-map (kbd "C-M-a") 'projectile-pt)
 (define-key projectile-mode-map (kbd "C-<f5>") 'projectile-compile-project)
 (define-key projectile-mode-map (kbd "<f5>") 'compile)
 (define-key projectile-mode-map (kbd "C-<f6>") 'projectile-find-other-file)
