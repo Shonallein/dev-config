@@ -11,6 +11,7 @@
 (defvar shona/packages '(
 			 auto-complete
 			 cmake-mode
+			 exec-path-from-shell
 			 flx-ido
 			 ggtags
 			 glsl-mode
@@ -37,9 +38,6 @@
   (dolist (pkg shona/packages)
     (when (not (package-installed-p pkg))
       (package-install pkg))))
-
-;; Config files
-;(load-file "~/.emacs/C++-custom.el")
 
 ;; Start server automatically
 (require 'server)
@@ -101,6 +99,11 @@
 
 ;; Projectile config
 (setq projectile-indexing-method 'alien)
+
+;; Load bashrc env
+(if (eq system-type 'gnu/linux)
+	(exec-path-from-shell-initialize)
+)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;; Language modes ;;;;;;;;;;;;;;;;;;;
