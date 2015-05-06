@@ -11,6 +11,8 @@
 (defvar shona/packages '(
 			 auto-complete
 			 cmake-mode
+			 clean-aindent-mode
+			 dtrt-indent
 			 flx-ido
 			 ggtags
 			 glsl-mode
@@ -53,6 +55,10 @@
 ;; disambiguate buffer names
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'post-forward-angle-brackets)
+
+;; Indentation helpers
+;;(clean-aindent-mode t)
+(dtrt-indent-mode t)
 
 ;; smart switch-buffer and find file
 (require 'flx-ido)
@@ -101,6 +107,7 @@
 
 ;; Projectile config
 (setq projectile-indexing-method 'alien)
+(setq projectile-enable-caching 't)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;; Language modes ;;;;;;;;;;;;;;;;;;;
@@ -164,13 +171,13 @@ With negative N, comment out original line and use the absolute value."
   "Toggle the letter case of current word or text selection.
 Toggles between: “all lower”, “Init Caps”, “ALL CAPS”."
   (interactive)
-  
+
   (let (p1 p2 (deactivate-mark nil) (case-fold-search nil))
     (if (use-region-p)
         (setq p1 (region-beginning) p2 (region-end))
       (let ((bds (bounds-of-thing-at-point 'word)))
         (setq p1 (car bds) p2 (cdr bds))))
-	
+
     (when (not (eq last-command this-command))
       (save-excursion
         (goto-char p1)
@@ -244,7 +251,7 @@ Toggles between: “all lower”, “Init Caps”, “ALL CAPS”."
       initial-scratch-message nil)
 ;; Font and theme
 (load-theme 'molokai t)
-(add-to-list 'default-frame-alist '(font . "DejaVu Sans Mono-10"))
+(add-to-list 'default-frame-alist '(font . "Consolas-11"))
 ;; Remove menu / tool bars
 (if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
 (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
@@ -267,7 +274,7 @@ Toggles between: “all lower”, “Init Caps”, “ALL CAPS”."
 (setq lazy-lock-defer-time 1)           ; Immediately fontify new text
 (setq lazy-lock-defer-on-scrolling t)   ; scroll first, fontify after defer time
 (setq lazy-lock-stealth-verbose nil)    ; print a message when stealth mode is activated
-(setq font-lock-maximum-decoration 3)   ; Niveau max 
+(setq font-lock-maximum-decoration 3)   ; Niveau max
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;; Misc ;;;;;;;;;;;;;;;;;;;;;;;;
@@ -278,6 +285,10 @@ Toggles between: “all lower”, “Init Caps”, “ALL CAPS”."
 (global-auto-revert-mode t) ;; Auto reload modified files
 (setq x-select-enable-clipboard t) ;; Interact with native clipboard
 (setq make-backup-files nil) ;; Deactivate backup files
+;; Compilation
+(setq compilation-scroll-output 'first-error) ;; in compile buffer scroll automatically to the first error
+(setq compilation-skip-threshold 2) ;; next error threashold set to error min
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -286,8 +297,7 @@ Toggles between: “all lower”, “Init Caps”, “ALL CAPS”."
  '(delete-selection-mode t)
  '(org-CUA-compatible nil)
  '(org-replace-disputed-keys nil)
- '(recentf-mode t)
- '(shift-select-mode nil))
+ '(recentf-mode t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
