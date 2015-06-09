@@ -26,12 +26,27 @@ function ReloadPath {
 }
 
 function Create-Path($path) {
-    if(-not (Test-Path $path)) {
-        Info "Creating path '$path'"
-        New-Item $path -type directory
+    if(Test-Path $path) {
+        Info "$path already exists"
         return
     }
-    Info "$path already exists"
+    
+    Info "Creating path '$path'"
+    New-Item $path -type directory    
+}
+
+function Create-Symlink($link, $target) {
+    if(Test-Path $link) {
+        Info "$link symlink already exists"
+    }
+    
+    $dir= Split-Path $link -parent
+    Create-Path $dir
+    if(Test-Path $target -pathType container) {
+        cmd /c mklink /D $link $target
+    } else {
+        cmd /c mklink $link $target
+    }
 }
 
 function Download-File($url, $path) {
@@ -73,20 +88,11 @@ Set-ItemProperty $key Hidden 1
 Set-ItemProperty $key HideFileExt 0
 Set-ItemProperty $key ShowSuperHidden 1
 
-# Create my directory tree
-function Create-Path($path) {
-    if(-not (Test-Path $path)) {
-        Info "Creating path '$path'"
-        New-Item $path -type directory
-        return
-    }
-    Info "$path already exists"
-}
-
+# Create dir structure
 Create-Path $mysrc
 Create-Path $mytools
-
-
+Create-Symlink "$env:USERPROFILE\Links\src" $mysrc
+Create-Symlink "$env:USERPROFILE\Links\Home" "$env:USERPROFILE"
 
 ###############################
 #    Software Installation    #
@@ -152,9 +158,14 @@ Choco-Install 7zip # compress/extract archivess
 #Choco-Install google-chrome-x64 # webbrowser
 Choco-Install curl # tool to emit request through different protocols. Great to debug web api :D
 Choco-Install launchy # Spotlight for windows
+Choco-Install meld # Cross platform merge tool
 
 # Install my favorite console emulator
 Install-Cmder
+
+###############################
+#            Misc             #
+###############################
 
 # Add git bin to path
 $gitBin = "C:\Program Files (x86)\Git\bin"
@@ -174,6 +185,10 @@ if(-not (Test-Path "$mysrc\dev-config")) {
 }
 
 # Make a symbolic link of my emacs configuration in emacs configuration dir
-
+Create-Symlink "$env:USERPROFILE\.emacs.d\init.el" "$mysrc\dev-config\init.el"
 
 # Make a symbolic link of my git config in my HOME
+Create-Symlink "$env:USERPROFILE\.gitconfig" "$mysrc\dev-config\.gitconfig"
+
+# Create Home env variable (required by many unix softwares)
+[Environment]::SetEnvironmentVariable("HOME", $env:USERPROFILE, [System.EnvironmentVariableTarget]::User)
