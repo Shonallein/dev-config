@@ -38,6 +38,7 @@ function Create-Path($path) {
 function Create-Symlink($link, $target) {
     if(Test-Path $link) {
         Info "$link symlink already exists"
+        return
     }
     
     $dir= Split-Path $link -parent
@@ -47,6 +48,17 @@ function Create-Symlink($link, $target) {
     } else {
         cmd /c mklink $link $target
     }
+}
+
+function Create-Link($link, $target) {
+    if(Test-Path $link) {
+        Info "$link symlink already exists"
+    }
+    
+    $WshShell = New-Object -comObject WScript.Shell
+    $Shortcut = $WshShell.CreateShortcut($link)
+    $Shortcut.TargetPath = $target
+    $Shortcut.Save()
 }
 
 function Download-File($url, $path) {
@@ -91,8 +103,8 @@ Set-ItemProperty $key ShowSuperHidden 1
 # Create dir structure
 Create-Path $mysrc
 Create-Path $mytools
-Create-Symlink "$env:USERPROFILE\Links\src" $mysrc
-Create-Symlink "$env:USERPROFILE\Links\Home" "$env:USERPROFILE"
+Create-Link "$env:USERPROFILE\Links\src.lnk" $mysrc
+Create-Link "$env:USERPROFILE\Links\Home.lnk" "$env:USERPROFILE"
 
 ###############################
 #    Software Installation    #
@@ -135,6 +147,7 @@ function Install-Cmder {
     if(-not (Test-Path $path)) {
         Error "Cmder installation failed!"
     }
+    Create-Link "$env:ChocolateyInstall\bin\Cmder.lnk" "$path\Cmder.exe"
     $env:CmderInstall = $path
     [Environment]::SetEnvironmentVariable("CmderInstall", $env:CmderInstall, [System.EnvironmentVariableTarget]::User)
 }
@@ -158,7 +171,7 @@ Choco-Install 7zip # compress/extract archivess
 #Choco-Install google-chrome-x64 # webbrowser
 Choco-Install curl # tool to emit request through different protocols. Great to debug web api :D
 Choco-Install launchy # Spotlight for windows
-Choco-Install meld # Cross platform merge tool
+#Choco-Install meld # Cross platform merge tool
 
 # Install my favorite console emulator
 Install-Cmder
@@ -192,3 +205,5 @@ Create-Symlink "$env:USERPROFILE\.gitconfig" "$mysrc\dev-config\.gitconfig"
 
 # Create Home env variable (required by many unix softwares)
 [Environment]::SetEnvironmentVariable("HOME", $env:USERPROFILE, [System.EnvironmentVariableTarget]::User)
+# Set emacs as alternative editor if the emacs server isn't launched
+[Environment]::SetEnvironmentVariable("ALTERNATE_EDITOR", "runemacs", [System.EnvironmentVariableTarget]::User)
