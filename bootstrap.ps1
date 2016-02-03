@@ -181,7 +181,7 @@ Install-Cmder
 ###############################
 
 # Add git bin to path
-$gitBin = "C:\Program Files (x86)\Git\bin"
+$gitBin = "C:\Program Files\Git\bin"
 if(-not (Test-Path $gitBin)) {
     Error "Git bin dir doesn't exists!"
 }
