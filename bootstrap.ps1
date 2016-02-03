@@ -153,7 +153,7 @@ function Install-Cmder {
 }
 
 function Choco-Install {
-    choco install -y $args
+    choco.exe install -y $args
     ReloadPath
 }
 
