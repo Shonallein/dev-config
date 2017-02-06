@@ -9,21 +9,28 @@
   '("melpa" . "http://melpa.milkbox.net/packages/") t)
 
 (defvar shona/packages '(
-			 auto-complete
+			 ace-jump-mode
+			 ;;auto-complete
 			 cmake-mode
-			 exec-path-from-shell
+			 counsel
+			 counsel-projectile
+			 editorconfig
+			 flx
 			 flx-ido
 			 ggtags
 			 glsl-mode
 			 google-this
 			 google-c-style
+			 haskell-mode
+			 ivy
 			 markdown-mode
 			 molokai-theme
 			 multiple-cursors
 			 projectile
 			 pt
+			 smartparens
+			 swiper
 			 undo-tree
-			 yasnippet
 			 zeal-at-point)
   "Default packages")
 
@@ -61,11 +68,11 @@
 (setq ido-use-faces nil)
 
 ;; smart text completion
-(require 'auto-complete-config)
-(ac-config-default)
-(add-to-list 'ac-modes 'cmake)
-(setq ac-auto-show-menu 0.3)
-(setq ac-show-menu-immediately-on-auto-complete t)
+;; (require 'auto-complete-config)
+;; (ac-config-default)
+;; (add-to-list 'ac-modes 'cmake)
+;; (setq ac-auto-show-menu 0.3)
+;; (setq ac-show-menu-immediately-on-auto-complete t)
 
 ;; projectile
 (require 'projectile)
@@ -73,10 +80,6 @@
 
 ;; Multiple cursors
 (require 'multiple-cursors)
-
-;; snippets!
-(require 'yasnippet)
-(yas-global-mode 1)
 
 ;; GGtags config
 (add-hook 'c-mode-common-hook
@@ -100,10 +103,15 @@
 ;; Projectile config
 (setq projectile-indexing-method 'alien)
 
-;; Load bashrc env
-(if (eq system-type 'gnu/linux)
-	(exec-path-from-shell-initialize)
-)
+;; SmartParens
+(require 'smartparens)
+(smartparens-mode 1)
+
+;; ivy / counsel / swiper
+(ivy-mode 1)
+(counsel-projectile-on)
+(setq ivy-re-builders-alist '((t . ivy--regex-fuzzy)))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;; Language modes ;;;;;;;;;;;;;;;;;;;
@@ -234,7 +242,7 @@ Toggles between: “all lower”, “Init Caps”, “ALL CAPS”."
 (define-key projectile-mode-map (kbd "C-<f7>") 'projectile-find-tag)
 
 ;; Misc
-(define-key ac-mode-map (kbd "C-SPC") 'auto-complete)
+;(define-key ac-mode-map (kbd "C-SPC") 'auto-complete)
 (define-key my-keys-minor-mode-map (kbd "M-ù") 'xah-toggle-letter-case)
 (define-key my-keys-minor-mode-map (kbd "C-d") 'duplicate-line-or-region)
 
@@ -290,7 +298,7 @@ Toggles between: “all lower”, “Init Caps”, “ALL CAPS”."
  '(org-CUA-compatible nil)
  '(org-replace-disputed-keys nil)
  '(recentf-mode t)
- '(shift-select-mode nil))
+ '(shift-select-mode t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
